@@ -2,43 +2,6 @@
 
 $filepath = 'docs' ;
 
-
-/*$filename = '20170317_042004(PM)___12.888112_80.231323__12°53′17″ N_80°13′52″ E___[map].jpg';
-
-$first_lat = substr($filename, strpos($filename, "___")+3);
-$first_long = substr($first_lat, strpos($first_lat, "_")+1);
-$sec_lat_long = substr($first_long, strpos($first_long, "__")+2);
-$arr = explode("_", substr($sec_lat_long,0, strpos($sec_lat_long, "___")));
-$latitude = floatval($first_lat);
-$longitude = floatval($first_long);
-$latitude1 = $arr[0];
-$longitude1 = $arr[1];*/
-
-/*$latitude = between_string($filename, "___", "_");
-$longitude = between_string($filename, "_", "__");
-$latitude1 = between_string($filename, "__", "_");
-$longitude1 = between_string($filename, "_", "__");*/
-
-/*var_dump($latitude, $longitude,$latitude1,$longitude1); die;*/
-
-
-if($handle = opendir($filepath)) {
-	while( false !== ($file = readdir($handle))) {
-		if(is_dir($file) == true){
-			break;
-		}
-		$first_lat = substr($file, strpos($file, "___")+3);
-		$first_long = substr($first_lat, strpos($first_lat, "_")+1);
-		$sec_lat_long = substr($first_long, strpos($first_long, "__")+2);
-		$arr = explode("_", substr($sec_lat_long,0, strpos($sec_lat_long, "___")));
-		$latitude = floatval($first_lat);
-		$longitude = floatval($first_long);
-		$latitude1 = $arr[0];
-		$longitude1 = $arr[1];
-		//var_dump($latitude, $longitude,$latitude1,$longitude1);
-	}
-}
-
 $server = "localhost";
 $dbusername = "root";
 $dbpassword = "1projectK!";
@@ -83,6 +46,24 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 
 
 
+	if($handle = opendir($filepath)) {
+		while( false !== ($file = readdir($handle))) {
+			if(is_dir($file) == true){
+				break;
+			}
+			$first_lat = substr($file, strpos($file, "___")+3);
+			$first_long = substr($first_lat, strpos($first_lat, "_")+1);
+			$sec_lat_long = substr($first_long, strpos($first_long, "__")+2);
+			$arr = explode("_", substr($sec_lat_long,0, strpos($sec_lat_long, "___")));
+			$latitude = floatval($first_lat);
+			$longitude = floatval($first_long);
+			$latitude1 = $arr[0];
+			$longitude1 = $arr[1];
+			//var_dump($latitude, $longitude,$latitude1,$longitude1);
+		}
+	}
+
+
 
 
 
@@ -99,15 +80,6 @@ if ($conn->query($sql) === TRUE) {
 }
 
 $conn->close();*/
-
-/*function between_string($name, $start, $end){
-    $name = ' ' . $name;
-    $ini = strpos($name, $start);
-    if ($ini == 0) return '';
-    $ini += strlen($start);
-    $len = strpos($name, $end, $ini) - $ini;
-    return substr($name, $ini, $len);	
-}*/
 
 
 
