@@ -14,6 +14,13 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 		var_dump("Connection error: ". $con->connect_error );
 	}
 
+	if (!$con->set_charset("utf8")) {
+	    printf("Error loading character set utf8: %s\n", $con->error);
+	    exit();
+	} else {
+	    printf("Current character set: %s\n", $con->character_set_name());
+	}	
+
 
 
 	if($handle = opendir($filepath)) {
@@ -25,8 +32,8 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 			$now = $path.'/'.$file;
 			//var_dump($now); die;		
 /*			$img_exist = mysqli_query($con, "SELECT * FROM device_details WHERE name = '.$file.'");
-			$count = mysqli_num_rows($img_exist);*/
-			//var_dump($count); die;
+			$count = mysqli_num_rows($img_exist);
+			var_dump($count); die;*/
 			$first_lat = substr($file, strpos($file, "___")+3);
 			$first_long = substr($first_lat, strpos($first_lat, "_")+1);
 			$sec_lat_long = substr($first_long, strpos($first_long, "__")+2);
@@ -58,7 +65,7 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 				longitude double(11,8) NOT NULL,
 				latitude1 varchar(255) NOT NULL,
 				longitude1 varchar(255) NOT NULL,
-				primary key(id)) DEFAULT CHARSET=utf8";
+				primary key(id)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 				if(mysqli_query($con, $sql)) {
 					echo "Table Created successfully";
@@ -74,11 +81,13 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 				'image_location' => realpath(dirname(__FILE__).'/docs/').$file
 			);
 			$sql = "INSERT INTO device_details (image_name, device_id, image_id, latitude, longitude, latitude1, longitude1)
-			VALUES ('$file', '$device_id', '$image_id', '$latitude', '$longitude', '$latitude1', '$longitude1')";
+			VALUES ('20170317_042004(PM)___12.888112_80.231323__12°53′17″ N_80°13′52″ E___[map].jpg', '$device_id', '$image_id', '$latitude', '$longitude', '$latitude1', '$longitude1')";
 			if(mysqli_query($con, $sql)){
 				echo "Device Detail Added ".$file;
+				echo "\n";
 			}else{
 				echo "Error Adding Details :". mysqli_error($con); 
+				break;
 			}
 		}
 	}
