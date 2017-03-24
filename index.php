@@ -2,7 +2,9 @@
 
 $filepath = 'docs' ;
 
-//https://www.youtube.com/watch?v=23KufSqo6cQ
+if(!file_exists($filepath)){
+	mkdir($filepath, 0777, true);
+}
 
 $server = "localhost";
 $dbusername = "root";
@@ -24,12 +26,9 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 	if($handle = opendir($filepath)) {
 		while( false !== ($file = readdir($handle))) {
 			if(is_dir($file) == true){
-				break;
+				continue;
 			}	
-			$path = realpath(dirname(__FILE__).'/docs');
-			$now = $path.'/'.$file;
-			//var_dump($now); die;		
-			//var_dump($count); die;
+
 			$first_lat = substr($file, strpos($file, "___")+3);
 			$first_long = substr($first_lat, strpos($first_lat, "_")+1);
 			$sec_lat_long = substr($first_long, strpos($first_long, "__")+2);
@@ -61,7 +60,8 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 				device_id varchar(20) NOT NULL,
 				serial_no varchar(255),
 				mac_address varchar(255),
-				image_id varchar(255),
+				image_id varchar(255) NOT NULL,
+				image_location varchar(255) NOT NULL,
 				latitude double(11,8) NOT NULL,
 				longitude double(11,8) NOT NULL,
 				latitude1 varchar(255) NOT NULL,
@@ -77,13 +77,10 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 				$device_id = 'OFCHN1087600';
 			}
 			$image_id = hash('sha256',$file);
-			$image[] = array(
-				'image_id' => $image_id,
-				'image_location' => realpath(dirname(__FILE__).'/docs/').$file
-			);
+			$image_location = realpath(dirname(__FILE__).'/docs').'/'.$file;
 			if($count == 0){
-				$sql = "INSERT INTO device_details (image_name, device_id, image_id, latitude, longitude, latitude1, longitude1)
-				VALUES ('$file', '$device_id', '$image_id', '$latitude', '$longitude', '$latitude1', '$longitude1')";
+				$sql = "INSERT INTO device_details (image_name, device_id, image_id, image_location, latitude, longitude, latitude1, longitude1)
+				VALUES ('$file', '$device_id', '$image_id', '$image_location', '$latitude', '$longitude', '$latitude1', '$longitude1')";
 				if(mysqli_query($con, $sql)){
 					echo "Device Detail Added ".$file;
 					echo "\n";
@@ -94,25 +91,5 @@ $con = new mysqli($server, $dbusername, $dbpassword, $dbname);
 			}
 		}
 	}
-
-
-
-
-
-
-
-
-/*$sql = "INSERT INTO MyGuests (firstname, lastname, email)
-VALUES ('John', 'Doe', 'john@example.com')";
-
-if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
-}
-
-$conn->close();*/
-
-
 
 ?>
